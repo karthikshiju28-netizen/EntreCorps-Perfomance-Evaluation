@@ -7,10 +7,10 @@ export default function ActionForm({ action, children, submit }: {
 }) {
   const [state, run, pending] = useActionState(action, null as R);
   return (
-    <form action={run} className="flex flex-col gap-2">
+    <form action={run} className="flex flex-col gap-3">
       {children}
-      <button disabled={pending} className="w-fit rounded bg-blue-700 px-4 py-2 text-sm text-white disabled:opacity-40">{submit}</button>
-      {state && <p className={`whitespace-pre-wrap text-sm ${state.ok ? 'text-green-700' : 'text-red-700'}`}>{state.message}</p>}
+      <button disabled={pending} className="btn-primary w-fit">{submit}</button>
+      {state && <p className={`whitespace-pre-wrap text-sm ${state.ok ? 'text-good' : 'text-warn'}`}>{state.message}</p>}
     </form>
   );
 }

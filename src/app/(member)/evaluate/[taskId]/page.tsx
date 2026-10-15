@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { requirePerson } from '@/lib/session';
 import { decodeTask } from '@/lib/form-schema';
@@ -25,8 +26,11 @@ export default async function EvaluatePage({ params }: { params: Promise<{ taskI
 
   return (
     <div className="flex flex-col gap-4">
-      <h1 className="text-xl font-semibold">{FORMS[task.formType].title}</h1>
-      <p className="text-sm text-gray-600">{FORMS[task.formType].description}</p>
+      <Link href="/" className="text-sm font-medium text-muted hover:text-ink">← My evaluations</Link>
+      <header className="mb-2">
+        <h1 className="text-2xl font-bold tracking-tight">{FORMS[task.formType].title}</h1>
+        <p className="mt-1 text-sm text-muted">{FORMS[task.formType].description}</p>
+      </header>
       <EvaluationForm
         taskId={taskId} formType={task.formType} evaluatorName={person.full_name} evaluatorRole={person.role}
         projectName={t.project_name} evaluateeName={t.evaluatee_name} initial={initial} locked={locked}

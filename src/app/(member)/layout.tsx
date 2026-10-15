@@ -3,5 +3,5 @@ import { Nav } from '@/components/Nav';
 
 export default async function MemberLayout({ children }: { children: React.ReactNode }) {
   const { person } = await requirePerson();
-  return (<><Nav isSlt={person.role === 'SLT'} /><div className="mx-auto max-w-3xl px-4 py-6">{children}</div></>);
+  return (<><Nav isSlt={person.role === 'SLT'} name={person.full_name} /><div className="mx-auto max-w-3xl px-4 py-8">{children}</div></>);
 }

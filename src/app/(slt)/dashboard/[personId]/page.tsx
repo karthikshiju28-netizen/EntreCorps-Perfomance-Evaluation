@@ -27,31 +27,34 @@ export default async function Person({ params, searchParams }: { params: Promise
 
   return (
     <div className="flex flex-col gap-6">
-      <Link href="/dashboard" className="text-sm text-blue-700 underline">← Dashboard</Link>
-      <header>
-        <h1 className="text-2xl font-semibold">{me.full_name}</h1>
-        <p className="text-sm text-gray-600">{me.role} · {me.projects}</p>
-        <p className="mt-2 text-sm">Self {f2(me.self_score)} · Manager {f2(me.manager_score)} · Upward {f2(me.upward_score)} · SLT {f2(me.slt_score)} · <b>Composite {f2(me.composite)}</b></p>
+      <Link href="/dashboard" className="text-sm font-medium text-muted hover:text-ink">← Dashboard</Link>
+      <header className="card p-6">
+        <h1 className="text-2xl font-bold tracking-tight">{me.full_name}</h1>
+        <p className="text-sm text-muted">{me.role} · {me.projects}</p>
+        <p className="mt-4 flex flex-wrap gap-2 text-sm">{[['Self', me.self_score], ['Manager', me.manager_score], ['Upward', me.upward_score], ['SLT', me.slt_score]].map(([k, v]) => (
+            <span key={k as string} className="badge bg-navy-50 text-navy">{k as string} {f2(v as number | null) || '—'}</span>
+          ))}
+          <span className="badge bg-accent text-white">Composite {f2(me.composite) || '—'}</span></p>
       </header>
       <section>
-        <h2 className="mb-2 font-semibold">Per-criterion averages</h2>
-        <table className="w-full rounded border bg-white text-sm">
-          <thead className="bg-gray-100"><tr><th className="p-2 text-left">Component</th>{KEYS.map((k) => <th key={k} className="p-2 text-left capitalize">{k}</th>)}</tr></thead>
+        <h2 className="mb-3 text-sm font-bold uppercase tracking-wide text-navy">Per-criterion averages</h2>
+        <div className="card overflow-x-auto"><table className="table">
+          <thead><tr><th>Component</th>{KEYS.map((k) => <th key={k} className="capitalize">{k}</th>)}</tr></thead>
           <tbody>{[...groups].map(([c, xs]) => (
-            <tr key={c} className="border-t"><td className="p-2">{c}</td>{KEYS.map((k) => <td key={k} className="p-2">{f2(avg(xs, k))}</td>)}</tr>
+            <tr key={c}><td className="font-semibold">{c}</td>{KEYS.map((k) => <td key={k}>{f2(avg(xs, k))}</td>)}</tr>
           ))}</tbody>
-        </table>
+        </table></div>
       </section>
       <section>
-        <h2 className="mb-2 font-semibold">Every evaluation received</h2>
+        <h2 className="mb-3 text-sm font-bold uppercase tracking-wide text-navy">Every evaluation received</h2>
         <ul className="flex flex-col gap-2">
           {list.map((e: any) => (
-            <li key={e.id} className="rounded border bg-white p-3 text-sm">
+            <li key={e.id} className="card p-4 text-sm">
               <div className="font-medium">
                 {new Date(e.submitted_at).toLocaleDateString()} · {e.form_type} · {e.evaluator.full_name} ({e.evaluator_role}) · {e.cycles.round}
               </div>
-              <div className="text-gray-600">{KEYS.map((k) => e[k] != null ? `${k} ${e[k]}` : null).filter(Boolean).join(' · ')} · avg {f2(e.eval_avg)}</div>
-              <p className="mt-1">{e.comment}</p>
+              <div className="mt-1 text-xs text-muted">{KEYS.map((k) => e[k] != null ? `${k} ${e[k]}` : null).filter(Boolean).join(' · ')} · avg {f2(e.eval_avg)}</div>
+              <p className="mt-3 leading-6">{e.comment}</p>
             </li>
           ))}
         </ul>
