@@ -10,6 +10,9 @@ export default async function LoginPage({ searchParams }: { searchParams: Promis
       <h1 className="text-2xl font-semibold">EntreCorps Evaluations</h1>
       {error && <p className="rounded bg-red-50 p-3 text-sm text-red-700">{error}</p>}
       <LoginForm domain={data?.value ?? 'illinois.edu'} />
+      <p className="text-center text-xs text-gray-500">
+        <a href="/privacy" className="underline">Privacy Policy</a> · <a href="/terms" className="underline">Terms of Use</a>
+      </p>
     </main>
   );
 }
