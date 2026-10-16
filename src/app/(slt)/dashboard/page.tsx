@@ -58,6 +58,12 @@ export default async function Dashboard({ searchParams }: { searchParams: Promis
   const owed = comp.filter((c) => !c.done);
   const reminder = [...new Map(owed.map((c) => [c.evaluator_id, `${c.evaluator_name} <${c.evaluator_email ?? ''}>`])).values()].join('\n');
 
+  let supportQ = sb.from('evaluations').select('leadership_support, form_type, cycles!inner(term, round), evaluator:people!evaluations_evaluator_id_fkey(full_name, role), projects(name)')
+    .not('leadership_support', 'is', null).order('submitted_at', { ascending: false });
+  if (term) supportQ = supportQ.eq('cycles.term', term);
+  if (round !== 'All Rounds') supportQ = supportQ.eq('cycles.round', round);
+  const { data: support } = await supportQ;
+
   const qs = (o: Partial<SP>) => '?' + new URLSearchParams(Object.entries({ ...sp, ...o }).filter(([, v]) => v) as [string, string][]).toString();
   const th = (k: string, label: string) => (
     <th><Link className="hover:text-ink" href={qs({ sort: k, dir: sp.sort === k && sp.dir !== 'desc' ? 'desc' : 'asc' })}>{label}</Link></th>
@@ -138,6 +144,20 @@ export default async function Dashboard({ searchParams }: { searchParams: Promis
           ))}</tbody>
         </table></div>
         <div className="card p-4"><BarChartProjects data={summary.map((s) => ({ project: s.project, avg: s.avg == null ? null : Number(s.avg.toFixed(2)) }))} /></div></div>
+      </section>
+
+      <section>
+        <h2 className="mb-3 text-sm font-bold uppercase tracking-wide text-navy">What members need from leadership ({support?.length ?? 0})</h2>
+        {support?.length ? (
+          <ul className="card divide-y divide-line">
+            {support.map((r: any, i: number) => (
+              <li key={i} className="px-4 py-3 text-sm">
+                <p className="leading-6">{r.leadership_support}</p>
+                <p className="mt-1 text-xs text-muted">{r.evaluator?.full_name} · {r.evaluator?.role} · {r.projects?.name}</p>
+              </li>
+            ))}
+          </ul>
+        ) : <p className="card px-4 py-6 text-sm text-muted">No answers yet.</p>}
       </section>
     </div>
   );

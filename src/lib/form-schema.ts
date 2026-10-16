@@ -9,10 +9,11 @@ const score = z.number().int().min(1).max(5);
 export function schemaFor(formType: FormType, evaluatorRole?: string) {
   const core = Object.fromEntries(CORE.map((c) => [c.key, score]));
   const comment = z.string().trim().min(1, 'Comment is required');
-  if (formType === 'manager') return z.object({ ...core, comment }).strict();
-  if (formType === 'upward' || formType === 'slt') return z.object({ ...core, leadership: score, comment }).strict();
+  const leadership_support = z.string().trim().max(1000).optional();
+  if (formType === 'manager') return z.object({ ...core, comment, leadership_support }).strict();
+  if (formType === 'upward' || formType === 'slt') return z.object({ ...core, leadership: score, comment, leadership_support }).strict();
   const isLead = evaluatorRole === 'Project Manager' || evaluatorRole === 'Senior Consultant';
-  return z.object({ ...core, ...(isLead ? { leadership: score.optional() } : {}), comment }).strict();
+  return z.object({ ...core, ...(isLead ? { leadership: score.optional() } : {}), comment, leadership_support }).strict();
 }
 
 export const encodeTask = (f: FormType, project: string, evaluatee: string) => `${f}~${project}~${evaluatee}`;

@@ -18,7 +18,7 @@ export default async function EvaluatePage({ params }: { params: Promise<{ taskI
   let initial: Record<string, any> | null = null;
   if (t.evaluation_id) {
     const { data: ev } = await sb.from('evaluations')
-      .select('technical,communication,reliability,teamwork,initiative,leadership,comment').eq('id', t.evaluation_id).single();
+      .select('technical,communication,reliability,teamwork,initiative,leadership,comment,leadership_support').eq('id', t.evaluation_id).single();
     initial = ev;
   }
   const { data: edits } = await sb.from('app_settings').select('value').eq('key', 'allow_edits_until_close').maybeSingle();

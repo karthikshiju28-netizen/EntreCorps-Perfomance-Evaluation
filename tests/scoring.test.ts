@@ -32,6 +32,13 @@ describe('forms', () => {
     expect(schemaFor('self', 'Project Manager').safeParse(core).success).toBe(true);
     expect(schemaFor('self', 'Consultant').safeParse({ ...core, leadership: 3 }).success).toBe(false);
   });
+  it('support question is optional on every form', () => {
+    for (const f of ['self', 'manager', 'upward', 'slt'] as const) {
+      const base = { ...core, ...(f === 'upward' || f === 'slt' ? { leadership: 4 } : {}) };
+      expect(schemaFor(f, 'Consultant').safeParse(base).success).toBe(true);
+      expect(schemaFor(f, 'Consultant').safeParse({ ...base, leadership_support: 'More client exposure' }).success).toBe(true);
+    }
+  });
   it('comment required', () => expect(schemaFor('manager').safeParse({ ...core, comment: '  ' }).success).toBe(false));
   it('task ids round-trip', () => expect(decodeTask(encodeTask('upward', 'p', 'e'))).toEqual({ formType: 'upward', projectId: 'p', evaluateeId: 'e' }));
 });

@@ -1119,3 +1119,8 @@ Either let SLT also rate consultants (add `'Consultant'` to the `slt` branch of 
 PM and SC rate each other so PM/SC have a Manager score (25% weight) | 
 On (`pm_sc_peer_reviews = 'true'`) | 
 Turn off in admin if you'd rather move that 25% elsewhere | 
+
+## Changes after the original spec (Fall 2026)
+- SLT members review only the PMs and SCs on projects they are staffed on (migration 0006). An SLT member with no project has no SLT reviews.
+- Every form has one extra optional short-answer question, `SUPPORT_QUESTION` in `src/lib/forms.ts`: "What can EntreCorps leadership help you with the most?" Stored in `evaluations.leadership_support`, shown on the SLT dashboard, and exported as the "Leadership Support" column.
+- Real roster lives only in Supabase and the git-ignored `seed/roster.csv`.

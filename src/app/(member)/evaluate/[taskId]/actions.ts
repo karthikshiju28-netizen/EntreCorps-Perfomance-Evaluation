@@ -22,6 +22,7 @@ export async function submitEvaluation(taskId: string, raw: unknown): Promise<{ 
     evaluator_role: person.role, evaluatee_role: t.evaluatee_role, // overwritten by trigger
     leadership: null as number | null,
     ...parsed.data,
+    leadership_support: parsed.data.leadership_support || null,
   };
   const { error } = await sb.from('evaluations')
     .upsert(row, { onConflict: 'cycle_id,form_type,evaluator_id,evaluatee_id,project_id' });

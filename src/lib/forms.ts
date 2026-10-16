@@ -36,3 +36,6 @@ export const FORMS = {
     description: "For SLT members. Submit once for each Project Manager / Senior Consultant you're evaluating.",
   },
 } as const;
+
+// Added Fall 2026 (not in the original Google Forms): optional short answer on every form.
+export const SUPPORT_QUESTION = 'What can EntreCorps leadership help you with the most?';

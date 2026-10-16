@@ -55,6 +55,11 @@ export default async function Person({ params, searchParams }: { params: Promise
               </div>
               <div className="mt-1 text-xs text-muted">{KEYS.map((k) => e[k] != null ? `${k} ${e[k]}` : null).filter(Boolean).join(' · ')} · avg {f2(e.eval_avg)}</div>
               <p className="mt-3 leading-6">{e.comment}</p>
+              {e.leadership_support && (
+                <p className="mt-3 rounded-xl bg-accent-50 p-3 text-xs leading-5 text-ink">
+                  <span className="font-semibold text-accent-600">Leadership could help with: </span>{e.leadership_support}
+                </p>
+              )}
             </li>
           ))}
         </ul>

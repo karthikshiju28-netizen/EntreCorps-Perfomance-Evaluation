@@ -1,7 +1,7 @@
 'use client';
 import { useEffect, useMemo, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { CORE, LEADERSHIP, LEADERSHIP_SELF, SCALE, COMMENT_SELF, COMMENT_OTHER } from '@/lib/forms';
+import { CORE, LEADERSHIP, LEADERSHIP_SELF, SCALE, COMMENT_SELF, COMMENT_OTHER, SUPPORT_QUESTION } from '@/lib/forms';
 import { schemaFor, type FormType } from '@/lib/form-schema';
 import { submitEvaluation } from './actions';
 
@@ -58,6 +58,7 @@ export default function EvaluationForm(p: {
     CORE.forEach((c) => (o[c.key] = a[c.key]));
     if (showLeadership && a.leadership != null) o.leadership = a.leadership;
     o.comment = a.comment ?? '';
+    if ((a.leadership_support as string)?.trim()) o.leadership_support = a.leadership_support;
     return o;
   }, [a, showLeadership]);
   const valid = useMemo(() => schemaFor(p.formType, p.evaluatorRole).safeParse(payload).success, [payload, p.formType, p.evaluatorRole]);
@@ -111,6 +112,14 @@ export default function EvaluationForm(p: {
         </span>
         <textarea rows={5} value={(a.comment as string) ?? ''} onChange={(e) => setA({ ...a, comment: e.target.value })}
           className="input min-h-32 py-3 leading-6" placeholder="Write 3-4 lines..." />
+      </label>
+      <label className="card flex flex-col gap-3 p-5">
+        <span className="font-semibold leading-snug">
+          {SUPPORT_QUESTION} <span className="text-xs font-medium text-muted">(optional)</span>
+        </span>
+        <input type="text" maxLength={1000} value={(a.leadership_support as string) ?? ''}
+          onChange={(e) => setA({ ...a, leadership_support: e.target.value })}
+          className="input" placeholder="Short answer" />
       </label>
 
       <div className="fixed inset-x-0 bottom-0 z-10 border-t border-line bg-white/90 backdrop-blur">
