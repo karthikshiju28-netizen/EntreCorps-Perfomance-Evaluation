@@ -100,17 +100,17 @@ export default function EvaluationForm(p: {
       </dl>
 
       {CORE.map((c, i) => (
-        <Scale key={c.key} n={i + 1} label={c.label} value={a[c.key] as number | undefined} onChange={(n) => setA({ ...a, [c.key]: n })} />
+        <Scale key={c.key} n={i + 1} label={c.label} value={a[c.key] as number | undefined} onChange={(n) => setA((prev) => ({ ...prev, [c.key]: n }))} />
       ))}
       {showLeadership && (
         <Scale n={CORE.length + 1} label={p.formType === 'self' ? LEADERSHIP_SELF : LEADERSHIP} optional={p.formType === 'self'}
-          value={a.leadership as number | undefined} onChange={(n) => setA({ ...a, leadership: n })} />
+          value={a.leadership as number | undefined} onChange={(n) => setA((prev) => ({ ...prev, leadership: n }))} />
       )}
       <label className="card flex flex-col gap-3 p-5">
         <span className="font-semibold leading-snug">
           {p.formType === 'self' ? COMMENT_SELF : COMMENT_OTHER}<span className="ml-1 text-accent">*</span>
         </span>
-        <textarea rows={5} value={(a.comment as string) ?? ''} onChange={(e) => setA({ ...a, comment: e.target.value })}
+        <textarea rows={5} value={(a.comment as string) ?? ''} onChange={(e) => setA((prev) => ({ ...prev, comment: e.target.value }))}
           className="input min-h-32 py-3 leading-6" placeholder="Write 3-4 lines..." />
       </label>
       <label className="card flex flex-col gap-3 p-5">
@@ -118,7 +118,7 @@ export default function EvaluationForm(p: {
           {SUPPORT_QUESTION} <span className="text-xs font-medium text-muted">(optional)</span>
         </span>
         <input type="text" maxLength={1000} value={(a.leadership_support as string) ?? ''}
-          onChange={(e) => setA({ ...a, leadership_support: e.target.value })}
+          onChange={(e) => setA((prev) => ({ ...prev, leadership_support: e.target.value }))}
           className="input" placeholder="Short answer" />
       </label>
 
