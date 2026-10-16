@@ -4,9 +4,9 @@ import { usePathname } from 'next/navigation';
 import { signOut } from '@/app/actions';
 import { Logo } from './Logo';
 
-export function Nav({ isSlt, name }: { isSlt: boolean; name: string }) {
+export function Nav({ isSlt, isLead = false, name }: { isSlt: boolean; isLead?: boolean; name: string }) {
   const path = usePathname();
-  const links = [{ href: '/', label: 'My evaluations' }, ...(isSlt ? [{ href: '/dashboard', label: 'Dashboard' }, { href: '/admin', label: 'Admin' }] : [])];
+  const links = [{ href: '/', label: 'My evaluations' }, ...(isLead ? [{ href: '/project', label: 'My project' }] : []), ...(isSlt ? [{ href: '/dashboard', label: 'Dashboard' }, { href: '/admin', label: 'Admin' }] : [])];
   const initials = name.split(' ').map((w) => w[0]).slice(0, 2).join('');
   return (
     <header className="sticky top-0 z-20 border-b border-line bg-white/85 backdrop-blur">

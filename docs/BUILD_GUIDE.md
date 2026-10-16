@@ -1124,3 +1124,4 @@ Turn off in admin if you'd rather move that 25% elsewhere |
 - SLT members review only the PMs and SCs on projects they are staffed on (migration 0006). An SLT member with no project has no SLT reviews.
 - Every form has one extra optional short-answer question, `SUPPORT_QUESTION` in `src/lib/forms.ts`: "What can EntreCorps leadership help you with the most?" Stored in `evaluations.leadership_support`, shown on the SLT dashboard, and exported as the "Leadership Support" column.
 - Real roster lives only in Supabase and the git-ignored `seed/roster.csv`.
+- PMs and SCs get a "My project" page (`/project`, migration 0007): live Self/Manager/composite scores and Self + Manager review comments for consultants on projects they lead, plus anonymous averages and comments from Upward reviews written about them, shown only once at least 3 consultants have reviewed them.
