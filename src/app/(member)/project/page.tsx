@@ -15,7 +15,8 @@ const MIN_UPWARD = 3;
 
 export default async function MyProject() {
   const { sb, person } = await requirePerson();
-  if (person.role !== 'Project Manager' && person.role !== 'Senior Consultant') notFound();
+  if (!['Project Manager', 'Senior Consultant', 'External Lead'].includes(person.role)) notFound();
+  const external = person.role === 'External Lead';  // not reviewed, so no feedback section
 
   const { data: cycleId } = await sb.rpc('current_or_latest_cycle');
   const { data: cycle } = cycleId
@@ -39,10 +40,10 @@ export default async function MyProject() {
       <header>
         <p className="label">{cycle ? `${cycle.term} · ${cycle.round}${cycle.is_open ? ' · live' : ''}` : 'No rounds yet'}</p>
         <h1 className="mt-1 text-2xl font-bold tracking-tight">My project</h1>
-        <p className="mt-1 text-sm text-muted">How your consultants are doing, and anonymous feedback about you.</p>
+        <p className="mt-1 text-sm text-muted">{external ? 'How your consultants are doing.' : 'How your consultants are doing, and anonymous feedback about you.'}</p>
       </header>
 
-      <section>
+      {!external && <section>
         <h2 className="mb-3 text-sm font-bold uppercase tracking-wide text-navy">Feedback about you</h2>
         <div className="card p-5">
           {!U || U.n < MIN_UPWARD ? (
@@ -73,7 +74,7 @@ export default async function MyProject() {
             </>
           )}
         </div>
-      </section>
+      </section>}
 
       {projects.length === 0 && <p className="card px-4 py-6 text-sm text-muted">No consultants on your projects yet.</p>}
 

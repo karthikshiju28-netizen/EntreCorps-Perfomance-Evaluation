@@ -1,4 +1,4 @@
-export const ROLES = ['Project Manager', 'Senior Consultant', 'Consultant', 'SLT'] as const;
+export const ROLES = ['Project Manager', 'Senior Consultant', 'Consultant', 'SLT', 'External Lead'] as const;
 export type Role = (typeof ROLES)[number];
 export type RosterRow = { name: string; email: string; role: Role; project: string };
 
