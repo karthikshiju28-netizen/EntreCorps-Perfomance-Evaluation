@@ -10,10 +10,14 @@ export function schemaFor(formType: FormType, evaluatorRole?: string) {
   const core = Object.fromEntries(CORE.map((c) => [c.key, score]));
   const comment = z.string().trim().min(1, 'Comment is required');
   const leadership_support = z.string().trim().max(1000).optional();
-  if (formType === 'manager') return z.object({ ...core, comment, leadership_support }).strict();
+  if (formType === 'manager') return z.object({ ...core, slide_design: score, comment, leadership_support }).strict();
   if (formType === 'upward' || formType === 'slt') return z.object({ ...core, leadership: score, comment, leadership_support }).strict();
   const isLead = evaluatorRole === 'Project Manager' || evaluatorRole === 'Senior Consultant';
-  return z.object({ ...core, ...(isLead ? { leadership: score.optional() } : {}), comment, leadership_support }).strict();
+  const isConsultant = evaluatorRole === 'Consultant';
+  return z.object({
+    ...core, ...(isLead ? { leadership: score.optional() } : {}), ...(isConsultant ? { slide_design: score } : {}),
+    comment, leadership_support,
+  }).strict();
 }
 
 export const encodeTask = (f: FormType, project: string, evaluatee: string) => `${f}~${project}~${evaluatee}`;
@@ -22,3 +26,7 @@ export function decodeTask(id: string) {
   if (!FORM_TYPES.includes(f as FormType) || !project || !evaluatee) return null;
   return { formType: f as FormType, projectId: project, evaluateeId: evaluatee };
 }
+
+// Slide Design is rated when the person being evaluated is a consultant.
+export const ratesSlideDesign = (formType: FormType, evaluatorRole?: string) =>
+  formType === 'manager' || (formType === 'self' && evaluatorRole === 'Consultant');

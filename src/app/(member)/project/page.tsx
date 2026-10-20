@@ -6,7 +6,7 @@ type Score = { project_id: string; project_name: string; person_id: string; full
   self_score: number | null; manager_score: number | null; composite: number | null; n_evals: number };
 type Review = { project_id: string; evaluatee_id: string; form_type: 'self' | 'manager'; evaluator_name: string;
   evaluator_role: string; technical: number; communication: number; reliability: number; teamwork: number;
-  initiative: number; eval_avg: number; comment: string; submitted_at: string };
+  initiative: number; slide_design: number | null; eval_avg: number; comment: string; submitted_at: string };
 type Upward = { n: number; technical: number | null; communication: number | null; reliability: number | null;
   teamwork: number | null; initiative: number | null; leadership: number | null; overall: number | null; comments: string[] | null };
 
@@ -107,6 +107,7 @@ export default async function MyProject() {
                             </div>
                             <p className="mt-1 text-xs text-muted">
                               {CORE.map((c) => `${c.label.replace(' (1-5)', '')} ${r[c.key as keyof Review]}`).join(' · ')}
+                              {r.slide_design != null && ` · Slide Design ${r.slide_design}`}
                             </p>
                             <p className="mt-2 leading-6">{r.comment}</p>
                           </li>

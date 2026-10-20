@@ -23,18 +23,26 @@ describe('scoring', () => {
 
 describe('forms', () => {
   const core = { technical: 3, communication: 3, reliability: 3, teamwork: 3, initiative: 3, comment: 'ok' };
-  it('manager rejects leadership', () => expect(schemaFor('manager').safeParse({ ...core, leadership: 3 }).success).toBe(false));
+  it('manager rejects leadership', () => expect(schemaFor('manager').safeParse({ ...core, slide_design: 3, leadership: 3 }).success).toBe(false));
+  it('slide design required for consultants only', () => {
+    expect(schemaFor('manager').safeParse(core).success).toBe(false);
+    expect(schemaFor('manager').safeParse({ ...core, slide_design: 4 }).success).toBe(true);
+    expect(schemaFor('self', 'Consultant').safeParse(core).success).toBe(false);
+    expect(schemaFor('self', 'Consultant').safeParse({ ...core, slide_design: 4 }).success).toBe(true);
+    expect(schemaFor('self', 'Project Manager').safeParse({ ...core, slide_design: 4 }).success).toBe(false);
+    expect(schemaFor('upward').safeParse({ ...core, leadership: 4, slide_design: 4 }).success).toBe(false);
+  });
   it('upward requires leadership', () => {
     expect(schemaFor('upward').safeParse(core).success).toBe(false);
     expect(schemaFor('upward').safeParse({ ...core, leadership: 4 }).success).toBe(true);
   });
   it('self leadership optional for PM, not accepted for consultant', () => {
     expect(schemaFor('self', 'Project Manager').safeParse(core).success).toBe(true);
-    expect(schemaFor('self', 'Consultant').safeParse({ ...core, leadership: 3 }).success).toBe(false);
+    expect(schemaFor('self', 'Consultant').safeParse({ ...core, slide_design: 3, leadership: 3 }).success).toBe(false);
   });
   it('support question is optional on every form', () => {
     for (const f of ['self', 'manager', 'upward', 'slt'] as const) {
-      const base = { ...core, ...(f === 'upward' || f === 'slt' ? { leadership: 4 } : {}) };
+      const base = { ...core, ...(f === 'upward' || f === 'slt' ? { leadership: 4 } : { slide_design: 4 }) };
       expect(schemaFor(f, 'Consultant').safeParse(base).success).toBe(true);
       expect(schemaFor(f, 'Consultant').safeParse({ ...base, leadership_support: 'More client exposure' }).success).toBe(true);
     }

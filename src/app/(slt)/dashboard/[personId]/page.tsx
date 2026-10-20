@@ -3,7 +3,7 @@ import { notFound } from 'next/navigation';
 import { createClient } from '@/lib/supabase/server';
 
 const f2 = (n: number | null | undefined) => (n == null ? '' : Number(n).toFixed(2));
-const KEYS = ['technical', 'communication', 'reliability', 'teamwork', 'initiative', 'leadership'] as const;
+const KEYS = ['technical', 'communication', 'reliability', 'teamwork', 'initiative', 'leadership', 'slide_design'] as const;
 const COMPONENT = (e: any, id: string) =>
   e.evaluator_id === id ? 'Self' : e.evaluator_role === 'SLT' ? 'SLT' : e.evaluator_role === 'Consultant' ? 'Upward' : 'Manager';
 
@@ -39,7 +39,7 @@ export default async function Person({ params, searchParams }: { params: Promise
       <section>
         <h2 className="mb-3 text-sm font-bold uppercase tracking-wide text-navy">Per-criterion averages</h2>
         <div className="card overflow-x-auto"><table className="table">
-          <thead><tr><th>Component</th>{KEYS.map((k) => <th key={k} className="capitalize">{k}</th>)}</tr></thead>
+          <thead><tr><th>Component</th>{KEYS.map((k) => <th key={k} className="capitalize">{k.replace('_', ' ')}</th>)}</tr></thead>
           <tbody>{[...groups].map(([c, xs]) => (
             <tr key={c}><td className="font-semibold">{c}</td>{KEYS.map((k) => <td key={k}>{f2(avg(xs, k))}</td>)}</tr>
           ))}</tbody>
@@ -53,7 +53,7 @@ export default async function Person({ params, searchParams }: { params: Promise
               <div className="font-medium">
                 {new Date(e.submitted_at).toLocaleDateString()} · {e.form_type} · {e.evaluator.full_name} ({e.evaluator_role}) · {e.cycles.round}
               </div>
-              <div className="mt-1 text-xs text-muted">{KEYS.map((k) => e[k] != null ? `${k} ${e[k]}` : null).filter(Boolean).join(' · ')} · avg {f2(e.eval_avg)}</div>
+              <div className="mt-1 text-xs text-muted">{KEYS.map((k) => e[k] != null ? `${k.replace('_', ' ')} ${e[k]}` : null).filter(Boolean).join(' · ')} · avg {f2(e.eval_avg)}</div>
               <p className="mt-3 leading-6">{e.comment}</p>
               {e.leadership_support && (
                 <p className="mt-3 rounded-xl bg-accent-50 p-3 text-xs leading-5 text-ink">

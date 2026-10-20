@@ -1,8 +1,8 @@
 'use client';
 import { useEffect, useMemo, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { CORE, LEADERSHIP, LEADERSHIP_SELF, SCALE, COMMENT_SELF, COMMENT_OTHER, SUPPORT_QUESTION } from '@/lib/forms';
-import { schemaFor, type FormType } from '@/lib/form-schema';
+import { CORE, LEADERSHIP, LEADERSHIP_SELF, SCALE, COMMENT_SELF, COMMENT_OTHER, SUPPORT_QUESTION, SLIDE_DESIGN } from '@/lib/forms';
+import { schemaFor, ratesSlideDesign, type FormType } from '@/lib/form-schema';
 import { submitEvaluation } from './actions';
 
 type Answers = Record<string, number | string | undefined>;
@@ -52,15 +52,17 @@ export default function EvaluationForm(p: {
   useEffect(() => { try { localStorage.setItem(key, JSON.stringify(a)); } catch {} }, [a, key]);
 
   const isLeadSelf = p.formType === 'self' && ['Project Manager', 'Senior Consultant'].includes(p.evaluatorRole);
+  const showSlides = ratesSlideDesign(p.formType, p.evaluatorRole);
   const showLeadership = p.formType === 'upward' || p.formType === 'slt' || isLeadSelf;
   const payload = useMemo(() => {
     const o: Record<string, unknown> = {};
     CORE.forEach((c) => (o[c.key] = a[c.key]));
+    if (showSlides) o.slide_design = a.slide_design;
     if (showLeadership && a.leadership != null) o.leadership = a.leadership;
     o.comment = a.comment ?? '';
     if ((a.leadership_support as string)?.trim()) o.leadership_support = a.leadership_support;
     return o;
-  }, [a, showLeadership]);
+  }, [a, showLeadership, showSlides]);
   const valid = useMemo(() => schemaFor(p.formType, p.evaluatorRole).safeParse(payload).success, [payload, p.formType, p.evaluatorRole]);
 
   async function submit(e: React.FormEvent) {
@@ -74,8 +76,9 @@ export default function EvaluationForm(p: {
     router.refresh();
   }
 
-  const answered = CORE.filter((c) => a[c.key] != null).length + (showLeadership && a.leadership != null ? 1 : 0);
-  const totalQ = CORE.length + (showLeadership ? 1 : 0);
+  const answered = CORE.filter((c) => a[c.key] != null).length + (showLeadership && a.leadership != null ? 1 : 0)
+    + (showSlides && a.slide_design != null ? 1 : 0);
+  const totalQ = CORE.length + (showLeadership ? 1 : 0) + (showSlides ? 1 : 0);
 
   return (
     <form onSubmit={submit} className="flex flex-col gap-4 pb-28">
@@ -102,8 +105,12 @@ export default function EvaluationForm(p: {
       {CORE.map((c, i) => (
         <Scale key={c.key} n={i + 1} label={c.label} value={a[c.key] as number | undefined} onChange={(n) => setA((prev) => ({ ...prev, [c.key]: n }))} />
       ))}
+      {showSlides && (
+        <Scale n={CORE.length + 1} label={SLIDE_DESIGN}
+          value={a.slide_design as number | undefined} onChange={(n) => setA((prev) => ({ ...prev, slide_design: n }))} />
+      )}
       {showLeadership && (
-        <Scale n={CORE.length + 1} label={p.formType === 'self' ? LEADERSHIP_SELF : LEADERSHIP} optional={p.formType === 'self'}
+        <Scale n={CORE.length + (showSlides ? 2 : 1)} label={p.formType === 'self' ? LEADERSHIP_SELF : LEADERSHIP} optional={p.formType === 'self'}
           value={a.leadership as number | undefined} onChange={(n) => setA((prev) => ({ ...prev, leadership: n }))} />
       )}
       <label className="card flex flex-col gap-3 p-5">

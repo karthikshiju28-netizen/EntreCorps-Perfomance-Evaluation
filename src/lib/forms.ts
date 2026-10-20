@@ -39,3 +39,6 @@ export const FORMS = {
 
 // Added Fall 2026 (not in the original Google Forms): optional short answer on every form.
 export const SUPPORT_QUESTION = 'What can EntreCorps leadership help you with the most?';
+
+// Added Fall 2026: rated only on evaluations about a consultant (their Self form and Manager reviews). Required.
+export const SLIDE_DESIGN = 'Slide Design (1-5)';

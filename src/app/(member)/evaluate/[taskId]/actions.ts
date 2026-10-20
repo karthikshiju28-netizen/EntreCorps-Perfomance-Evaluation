@@ -21,6 +21,7 @@ export async function submitEvaluation(taskId: string, raw: unknown): Promise<{ 
     evaluator_id: person.id, evaluatee_id: task.evaluateeId,
     evaluator_role: person.role, evaluatee_role: t.evaluatee_role, // overwritten by trigger
     leadership: null as number | null,
+    slide_design: null as number | null,
     ...parsed.data,
     leadership_support: parsed.data.leadership_support || null,
   };
