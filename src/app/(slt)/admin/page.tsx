@@ -1,4 +1,4 @@
-import { createClient } from '@/lib/supabase/server';
+import { requireSlt } from '@/lib/session';
 import ActionForm from '@/components/ActionForm';
 import {
   importRoster, setPersonActive, addProject, setProjectActive, createCycle, setCycleOpen,
@@ -9,7 +9,7 @@ const H = ({ children }: { children: React.ReactNode }) => <h2 className="mb-4 t
 const Box = ({ children }: { children: React.ReactNode }) => <section className="card p-6">{children}</section>;
 
 export default async function Admin() {
-  const sb = await createClient();
+  const { sb } = await requireSlt();
   const [{ data: people }, { data: emails }, { data: asg }, { data: projs }, { data: cycles }, { data: weights }, { data: settings }] =
     await Promise.all([
       sb.from('people').select('*').order('full_name'), sb.from('person_emails').select('email,person_id'),

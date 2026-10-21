@@ -10,7 +10,7 @@ const toCsv = (rows: Record<string, unknown>[]) => {
 
 export async function GET(req: NextRequest) {
   const sb = await createClient();
-  const { data: ok } = await sb.rpc('is_slt');
+  const { data: ok } = await sb.rpc('can_view_dashboard');
   if (!ok) return new NextResponse('Not found', { status: 404 });
   const q = req.nextUrl.searchParams;
   const kind = q.get('kind');

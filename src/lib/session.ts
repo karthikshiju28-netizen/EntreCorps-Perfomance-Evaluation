@@ -20,3 +20,11 @@ export async function requireSlt() {
   if (!data) notFound();
   return ctx;
 }
+
+// SLT and External Leads can view the Dashboard; only SLT can use Admin.
+export async function requireDashboard() {
+  const ctx = await requirePerson();
+  const { data } = await ctx.sb.rpc('can_view_dashboard');
+  if (!data) notFound();
+  return ctx;
+}
